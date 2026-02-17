@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spendly – AI Charts</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+  <style>
+    /* ===== BASE ===== */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(160deg, #06080d 0%, #0c1425 30%, #111d36 60%, #0a1020 100%);
+      color: #e2e8f0;
+      min-height: 100vh;
+      margin: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===== GLASS NAV ===== */
+    .glass-nav {
+      background: rgba(8, 12, 25, 0.65);
+      backdrop-filter: blur(24px) saturate(1.6);
+      -webkit-backdrop-filter: blur(24px) saturate(1.6);
+      border-bottom: 1px solid rgba(99, 102, 241, 0.15);
+      padding: 12px 28px;
+    }
+
+    .glass-nav .navbar-brand {
+      font-weight: 800;
+      font-size: 22px;
+      background: linear-gradient(135deg, #e5e7ff, #4f46e5, #1e293b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.5px;
+    }
+
+    .glass-nav .navbar-brand:hover {
+      background: linear-gradient(135deg, #ffffff, #6366f1, #0f172a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .glass-nav .nav-link {
+      color: #94a3b8 !important;
+      font-weight: 500;
+      font-size: 14px;
+      margin-left: 8px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      transition: all 0.25s ease;
+    }
+
+    .glass-nav .nav-link.active,
+    .glass-nav .nav-link:hover {
+      color: #fff !important;
+      background: rgba(99, 102, 241, 0.15);
+    }
+
+    /* ===== GLASS CARD ===== */
+    .glass-card {
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(20px) saturate(1.4);
+      -webkit-backdrop-filter: blur(20px) saturate(1.4);
+      border: 1px solid rgba(99, 102, 241, 0.12);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .glass-card:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 12px 40px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+
+    /* ===== SECTION HEADER ===== */
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title i {
+      font-size: 22px;
+      background: linear-gradient(135deg, #818cf8, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* ===== TAB BUTTONS ===== */
+    .chart-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .chart-tab-btn {
+      padding: 10px 20px;
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      background: rgba(30, 41, 59, 0.5);
+      color: #94a3b8;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      backdrop-filter: blur(8px);
+    }
+
+    .chart-tab-btn:hover {
+      color: #e2e8f0;
+      border-color: rgba(99, 102, 241, 0.4);
+      background: rgba(99, 102, 241, 0.1);
+    }
+
+    .chart-tab-btn.active {
+      color: #ffffff;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(192, 132, 252, 0.15));
+      border-color: rgba(99, 102, 241, 0.5);
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+    }
+
+    /* ===== TOGGLE ===== */
+    .toggle-group {
+      display: flex;
+      background: rgba(30, 41, 59, 0.6);
+      border-radius: 12px;
+      padding: 4px;
+      border: 1px solid rgba(99, 102, 241, 0.1);
+      width: fit-content;
+      margin-bottom: 16px;
+    }
+
+    .toggle-btn {
+      padding: 8px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #64748b;
+      background: transparent;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .toggle-btn.active {
+      color: #fff;
+      background: rgba(99, 102, 241, 0.3);
+      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
+    }
+
+    /* ===== CHART CONTAINER ===== */
+    .chart-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 360px;
+      padding: 12px;
+    }
+
+    .chart-container img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+    }
+
+    /* ===== AI INSIGHT CARD ===== */
+    .ai-insight-card {
+      background: linear-gradient(135deg, rgba(52, 211, 153, 0.08), rgba(99, 102, 241, 0.08));
+      border: 1px solid rgba(52, 211, 153, 0.2);
+      border-radius: 16px;
+      padding: 20px 24px;
+      margin-top: 16px;
+    }
+
+    .ai-insight-card .ai-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #34d399;
+      margin-bottom: 8px;
+    }
+
+    .ai-insight-card p {
+      font-size: 14px;
+      color: #cbd5e1;
+      line-height: 1.7;
+      margin: 0;
+    }
+
+    /* ===== ANOMALY TABLE ===== */
+    .anomaly-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .anomaly-badge.high {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .anomaly-badge.medium {
+      background: rgba(251, 191, 36, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(251, 191, 36, 0.3);
+    }
+
+    .anomaly-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 6px;
+    }
+
+    .anomaly-table th {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #64748b;
+      padding: 8px 14px;
+    }
+
+    .anomaly-table td {
+      padding: 12px 14px;
+      font-size: 13px;
+      background: rgba(30, 41, 59, 0.4);
+      color: #e2e8f0;
+    }
+
+    .anomaly-table tr td:first-child {
+      border-radius: 10px 0 0 10px;
+    }
+
+    .anomaly-table tr td:last-child {
+      border-radius: 0 10px 10px 0;
+    }
+
+    /* ===== AI MODEL BADGE ===== */
+    .model-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #a5b4fc;
+      letter-spacing: 0.5px;
+    }
+
+    .model-badge i {
+      font-size: 14px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .glass-card {
+        padding: 16px;
+        border-radius: 16px;
+      }
+
+      .chart-tabs {
+        gap: 6px;
+      }
+
+      .chart-tab-btn {
+        padding: 8px 14px;
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar navbar-expand-lg glass-nav px-1">
+    <a class="navbar-brand fw-bold" href="/dashboard">
+      <img src="{{ url_for('static', filename='img.png') }}" alt="Logo" style="width:45px;height:45px;">
+      Spendly
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto align-items-center">
+        <li class="nav-item"><a class="nav-link" href="/dashboard"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="/accounts"><i class="bi bi-wallet2"></i> Accounts</a></li>
+        <li class="nav-item"><a class="nav-link active" href="/charts"><i class="bi bi-bar-chart"></i> Charts</a></li>
+        <li class="nav-item"><a class="nav-link" href="/reports"><i class="bi bi-file-earmark-bar-graph"></i>
+            Reports</a></li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            <i class="bi bi-person-circle"></i> {{ user.first_name }}
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown"
+            style="background:rgba(15,23,42,0.95);border:1px solid rgba(99,102,241,0.3);">
+            <li><a class="dropdown-item" href="/profile" style="color:#c7d2fe;">Profile</a></li>
+            <li>
+              <hr class="dropdown-divider" style="border-color:rgba(99,102,241,0.2);">
+            </li>
+            <li><a class="dropdown-item text-danger" href="/logout"
+                onclick="return confirm('Are you sure you want to logout?')">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container py-4">
+
+    <!-- ===== PAGE HEADER ===== -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+      <h2 style="font-weight: 800; font-size: 28px; margin: 0;">
+        <i class="bi bi-bar-chart-line-fill" style="color: #818cf8;"></i> AI Analytics
+      </h2>
+      <div class="d-flex gap-2 flex-wrap mt-2 mt-md-0">
+        <span class="model-badge"><i class="bi bi-cpu"></i> Linear Regression (NumPy)</span>
+        <span class="model-badge"><i class="bi bi-shield-check"></i> Z-Score Detection (NumPy)</span>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+           SECTION 1 : CATEGORY CHARTS (Expense / Income)
+           ═══════════════════════════════════════════ -->
+    <div class="glass-card mb-4">
+      <div class="section-title"><i class="bi bi-pie-chart-fill"></i> Category Breakdown</div>
+
+      <!-- Expense / Income toggle -->
+      <div class="toggle-group" id="dataToggle">
+        <button class="toggle-btn active" onclick="switchData('expense')">Expenses</button>
+        <button class="toggle-btn" onclick="switchData('income')">Income</button>
+      </div>
+
+      <!-- Chart type tabs -->
+      <div class="chart-tabs">
+        <button class="chart-tab-btn active" onclick="switchChart('pie')"><i
+            class="bi bi-pie-chart me-1"></i>Pie</button>
+        <button class="chart-tab-btn" onclick="switchChart('bar')"><i class="bi bi-bar-chart me-1"></i>Bar</button>
+        <button class="chart-tab-btn" onclick="switchChart('line')"><i class="bi bi-graph-up me-1"></i>Line</button>
+      </div>
+
+      <div class="chart-container">
+        <!-- Expense charts -->
+        <img id="pie-expense" src="data:image/png;base64,{{ pie_expense_b64 }}"
+          class="img-fluid chart-img expense-chart" alt="Expense Pie" style="display:block;">
+        <img id="bar-expense" src="data:image/png;base64,{{ bar_expense_b64 }}"
+          class="img-fluid chart-img expense-chart" alt="Expense Bar" style="display:none;">
+        <img id="line-expense" src="data:image/png;base64,{{ line_expense_b64 }}"
+          class="img-fluid chart-img expense-chart" alt="Expense Line" style="display:none;">
+        <!-- Income charts -->
+        <img id="pie-income" src="data:image/png;base64,{{ pie_income_b64 }}" class="img-fluid chart-img income-chart"
+          alt="Income Pie" style="display:none;">
+        <img id="bar-income" src="data:image/png;base64,{{ bar_income_b64 }}" class="img-fluid chart-img income-chart"
+          alt="Income Bar" style="display:none;">
+        <img id="line-income" src="data:image/png;base64,{{ line_income_b64 }}" class="img-fluid chart-img income-chart"
+          alt="Income Line" style="display:none;">
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+           SECTION 2 : AI FORECAST
+           ═══════════════════════════════════════════ -->
+    <div class="glass-card mb-4">
+      <div class="section-title"><i class="bi bi-graph-up-arrow"></i> AI Spending Forecast</div>
+      <div class="d-flex gap-2 mb-3">
+        <span class="model-badge"><i class="bi bi-cpu"></i> Model: Linear Regression &nbsp;|&nbsp; numpy.polyfit(x, y,
+          1)</span>
+      </div>
+
+      {% if forecast_b64 %}
+      <div class="chart-container">
+        <img src="data:image/png;base64,{{ forecast_b64 }}" class="img-fluid" alt="AI Forecast Chart">
+      </div>
+      <div class="ai-insight-card">
+        <div class="ai-label"><i class="bi bi-robot"></i> AI Insight</div>
+        <p>{{ forecast_insight|safe }}</p>
+      </div>
+      {% else %}
+      <div class="ai-insight-card">
+        <div class="ai-label"><i class="bi bi-robot"></i> AI Insight</div>
+        <p>{{ forecast_insight or 'Add more expenses to unlock AI forecasting.' }}</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+           SECTION 3 : AI ANOMALY DETECTION
+           ═══════════════════════════════════════════ -->
+    <div class="glass-card mb-4">
+      <div class="section-title"><i class="bi bi-shield-exclamation"></i> AI Anomaly Detection</div>
+      <div class="d-flex gap-2 mb-3">
+        <span class="model-badge"><i class="bi bi-shield-check"></i> Model: Z-Score Detection &nbsp;|&nbsp; threshold =
+          2σ</span>
+      </div>
+
+      {% if anomalies and anomalies|length > 0 %}
+      <table class="anomaly-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Amount</th>
+            <th>Z-Score</th>
+            <th>Severity</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for a in anomalies %}
+          <tr>
+            <td>{{ a.date }}</td>
+            <td>₹{{ "%.2f"|format(a.amount) }}</td>
+            <td>{{ "%.2f"|format(a.z_score) }}</td>
+            <td>
+              {% if a.severity == 'High' %}
+              <span class="anomaly-badge high"><i class="bi bi-exclamation-triangle-fill"></i> High</span>
+              {% else %}
+              <span class="anomaly-badge medium"><i class="bi bi-exclamation-circle-fill"></i> Medium</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="ai-insight-card">
+        <div class="ai-label"><i class="bi bi-check-circle"></i> All Clear</div>
+        <p>No unusual spending patterns detected. Your spending is within normal range.</p>
+      </div>
+      {% endif %}
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    let currentChart = 'pie';
+    let currentData = 'expense';
+
+    function switchChart(type) {
+      currentChart = type;
+      // Update tab buttons
+      document.querySelectorAll('.chart-tab-btn').forEach(b => b.classList.remove('active'));
+      event.target.closest('.chart-tab-btn').classList.add('active');
+      updateChartVisibility();
+    }
+
+    function switchData(dataType) {
+      currentData = dataType;
+      // Update toggle buttons
+      document.querySelectorAll('#dataToggle .toggle-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      updateChartVisibility();
+    }
+
+    function updateChartVisibility() {
+      document.querySelectorAll('.chart-img').forEach(img => img.style.display = 'none');
+      const targetId = currentChart + '-' + currentData;
+      const el = document.getElementById(targetId);
+      if (el) el.style.display = 'block';
+    }
+  </script>
+</body>
+
+</html>

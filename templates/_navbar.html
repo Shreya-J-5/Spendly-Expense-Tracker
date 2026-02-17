@@ -1,0 +1,98 @@
+<!-- PREMIUM NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark premium-navbar px-4">
+    <div class="container-fluid">
+
+        <a class="navbar-brand d-flex align-items-center gap-2 fw-bold fs-4"
+           href="{{ url_for('dashboard') }}">
+            <img src="{{ url_for('static', filename='images/logo.png') }}"
+                 width="35">
+            <span class="brand-text">Spendly</span>
+        </a>
+
+        <div class="collapse navbar-collapse justify-content-end">
+            <ul class="navbar-nav align-items-center gap-3">
+
+                <li class="nav-item">
+                    <a class="nav-link {% if request.endpoint == 'dashboard' %}active-nav{% endif %}"
+                       href="{{ url_for('dashboard') }}">
+                        <i class="bi bi-speedometer2 me-1"></i> Dashboard
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link {% if request.endpoint == 'accounts' %}active-nav{% endif %}"
+                       href="{{ url_for('accounts') }}">
+                        <i class="bi bi-wallet2 me-1"></i> Accounts
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link {% if request.endpoint == 'charts' %}active-nav{% endif %}"
+                       href="{{ url_for('charts') }}">
+                        <i class="bi bi-bar-chart-line me-1"></i> Charts
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link {% if request.endpoint == 'reports' %}active-nav{% endif %}"
+                       href="{{ url_for('reports') }}">
+                        <i class="bi bi-file-earmark-text me-1"></i> Reports
+                    </a>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle"
+                       href="#"
+                       data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle"></i> {{ session.get('username', 'User') }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
+                    </ul>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- <style>
+    /* PREMIUM NAVBAR STYLE */
+
+.premium-navbar {S
+    background: linear-gradient(
+        90deg,
+        #050c1f 0%,
+        #0b1a3a 40%,
+        #050c1f 100%
+    );
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+.brand-text {
+    background: linear-gradient(90deg, #5f6fff, #6dd5ed);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.nav-link {
+    color: #b8c0ff !important;
+    font-weight: 500;
+    transition: 0.3s ease;
+    padding: 8px 14px;
+    border-radius: 8px;
+}
+
+.nav-link:hover {
+    color: white !important;
+    background: rgba(255,255,255,0.05);
+}
+
+.active-nav {
+    background: rgba(92, 112, 255, 0.15);
+    color: #ffffff !important;
+    font-weight: 600;
+}
+</style> -->

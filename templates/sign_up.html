@@ -1,0 +1,158 @@
+{% extends "base.html" %} {% block title %}Sign Up{% endblock %} {% block
+content %}
+<form method="POST">
+  <fieldset class="auth-fieldset" style="width: 450px; height: 745px">
+    <legend class="auth-title" align="center">
+      <h3>Sign Up</h3>
+    </legend>
+
+    <div class="form-group">
+      <label for="firstName">Username</label>
+      <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Enter username" />
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email Address</label>
+      <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" />
+    </div>
+
+    <div class="form-group">
+      <label for="password1">Password</label>
+      <input type="password" class="form-control" id="password1" name="password1" placeholder="Enter password" />
+    </div>
+    <div class="form-group">
+      <label for="password2">Confirm Password</label>
+      <input type="password" class="form-control" id="password2" name="password2" placeholder="Confirm password" />
+    </div>
+    <div class="form-group">
+      <label for="gender">Gender</label>
+      <select class="form-control " id="gender" name="gender">
+        <option value="" class="text-dark">Select gender</option>
+        <option value="Male" class="text-dark">Male</option>
+        <option value="Female" class="text-dark">Female</option>
+        <option value="Other" class="text-dark">Other</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="number">Phone Number</label>
+      <input type="text" class="form-control" id="number" name="number" placeholder="Enter phone number" />
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Submit</button>
+    <div class="text-center mt-3"> Already have an account?
+      <a href="/login" class="text-decoration-underline">Login</a>
+    </div>
+  </fieldset>
+</form>
+<style>
+ body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(160deg, #06080d 0%, #0c1425 30%, #111d36 60%, #0a1020 100%);
+      color: #e2e8f0;
+      min-height: 100vh;
+      margin: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+  label {
+    color: #c7d2fe;
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+
+  .form-control {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(99, 102, 241, 0.35);
+    border-radius: 10px;
+
+    color: #e5e7eb;
+    padding: 10px 12px;
+
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .form-control::placeholder {
+    color: #9ca3af;
+  }
+
+  .form-control:focus {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(99, 102, 241, 0.75);
+    box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.35);
+    outline: none;
+    color: #ffffff;
+  }
+
+  .auth-title {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 24px;
+
+    color: #e5e7eb;
+    letter-spacing: 0.6px;
+
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  }
+
+  /* ===== AUTH CARD (LOGIN + SIGNUP SAME) ===== */
+  .auth-fieldset {
+    width: 360px;
+    margin: 90px auto;
+    padding: 40px 28px 30px;
+
+    background: rgba(12, 18, 30, 0.65);
+    backdrop-filter: blur(18px);
+
+    border: 1.5px solid rgba(99, 102, 241, 0.45);
+    border-radius: 18px;
+
+    box-shadow: 0 26px 70px rgba(0, 0, 0, 0.75),
+      0 0 0 1px rgba(99, 102, 241, 0.15);
+
+    color: #e5e7eb;
+  }
+
+  .auth-fieldset:hover {
+    box-shadow: 0 34px 85px rgba(0, 0, 0, 0.8),
+      0 0 0 1px rgba(99, 102, 241, 0.3);
+  }
+
+  .btn {
+    width: 100%;
+    padding: 12px 14px;
+
+    background: linear-gradient(135deg, #4f5bd5, #3b4cc0, #2a3a8f);
+
+    border: 1px solid rgba(99, 102, 241, 0.6);
+    border-radius: 12px;
+
+    color: #f8fafc;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+
+    cursor: pointer;
+
+    outline: none;
+    /* 🔥 removes green focus */
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+    transition: background 0.25s ease, box-shadow 0.25s ease,
+      transform 0.2s ease, border-color 0.25s ease;
+  }
+
+  .btn:hover {
+    background: linear-gradient(135deg, #5b6dff, #4f5bd5, #3644b0);
+
+    border-color: rgba(99, 102, 241, 0.85);
+    /* force blue */
+
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.65),
+      0 0 0 1px rgba(99, 102, 241, 0.35);
+
+    transform: translateY(-1px);
+  }
+</style>
+{% endblock %}
