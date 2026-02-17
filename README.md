@@ -68,42 +68,37 @@ Architecture
 ## 📂 Project Structure
 
 Spendly/
-
-│  
-├── __init__.py              App factory configuration  
-├── main.py                  Application entry point  
-├── auth.py                  Authentication routes  
-├── views.py                 Dashboard, charts, reports routes  
-├── models.py                Database models  
-├── ai_models.py             AI calculations  
-├── add_user_columns.py      Database update logic  
-├── seed_data.py             Sample data generator  
-
-│  
-├── instance/  
-│   └── spendly.db           SQLite database  
-
-│  
-├── templates/  
-│   ├── base.html  
-│   ├── dashboard.html  
-│   ├── accounts.html  
-│   ├── charts.html  
-│   ├── reports.html  
-│   ├── login.html  
-│   ├── sign_up.html  
-│   ├── landingpage.html  
-│   ├── profile.html  
-│   └── about.html  
-
-│  
-├── static/  
-│   ├── img.png  
-│   └── index.js  
-
-│  
-├── requirements.txt  
-└── README.md  
+│
+├── __init__.py              # App factory configuration
+├── main.py                  # Application entry point
+├── auth.py                  # Authentication routes
+├── views.py                 # Dashboard, charts, reports routes
+├── models.py                # Database models
+├── ai_models.py             # AI calculations (Regression, Z-score)
+├── add_user_columns.py      # Database migration logic
+├── seed_data.py             # Sample data generator
+│
+├── instance/
+│   └── spendly.db           # SQLite database
+│
+├── templates/
+│   ├── base.html
+│   ├── dashboard.html
+│   ├── accounts.html
+│   ├── charts.html
+│   ├── reports.html
+│   ├── login.html
+│   ├── sign_up.html
+│   ├── landingpage.html
+│   ├── profile.html
+│   └── about.html
+│
+├── static/
+│   ├── img.png
+│   └── index.js
+│
+├── requirements.txt
+└── README.md
 
 ---
 
