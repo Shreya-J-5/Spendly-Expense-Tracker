@@ -14,19 +14,12 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
   <style>
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-    }
-
     body {
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      background: linear-gradient(160deg, #06080d 0%, #0c1425 30%, #111d36 60%, #0a1020 100%);
-      color: #e2e8f0;
       min-height: 100vh;
       margin: 0;
-      -webkit-font-smoothing: antialiased;
+      background: linear-gradient(135deg, #0a0e14, #23314b, #0b1220, #45557e);
+      color: #e5e7eb;
+      font-family: "Inter", system-ui, -apple-system, sans-serif;
     }
 
     /* Navbar Styles */
@@ -250,7 +243,38 @@
 </head>
 
 <body>
-  {% include "_navbar.html" %}
+  <!-- ================= NAVBAR ================= -->
+  <nav class="navbar navbar-expand-lg glass-nav px-4">
+    <div class="navbar-brand">
+      <img src="{{ url_for('static', filename='img.png') }}" alt="Spendly Logo" />
+      Spendly
+    </div>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"
+      style="border-color: rgba(124, 131, 255, 0.5);">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto align-items-center">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#features">Features</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#about">About</a>
+        </li>
+        <li class="nav-item ms-3">
+          <a href="/login" class="btn nav-btn nav-btn-outline">Login</a>
+        </li>
+        <li class="nav-item ms-2">
+          <a href="/sign-up" class="btn nav-btn nav-btn-primary">Sign Up</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
 
   <section class="d-flex align-items-center" style="min-height: 100vh">
     <div class="container">

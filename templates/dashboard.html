@@ -272,7 +272,8 @@
                 "%.2f"|format(expense.amount) }}
               </td>
               <td>
-                <button class="action-text delete" onclick="deleteExpense({{ expense.id }})">
+
+                <button type="button" class="action-text delete" onclick="deleteExpense({expense})">
                   Delete
                 </button>
               </td>
