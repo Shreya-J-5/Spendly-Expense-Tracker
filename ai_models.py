@@ -1,18 +1,8 @@
-"""
-AI Models for Spendly - Expense Tracking & Forecasting
-=======================================================
-Models used:
-  1. Linear Regression (numpy.polyfit)  – forecasts future daily spending
-  2. Z-Score Anomaly Detection (numpy)  – flags unusual transactions
-  3. Category breakdown helpers         – pie / bar / line chart generation
 
-All chart rendering uses matplotlib with a dark theme that matches the UI.
-"""
 
 import io
 import base64
 from datetime import datetime, timedelta
-from collections import defaultdict
 
 import numpy as np
 import matplotlib
@@ -20,9 +10,6 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 
-# ──────────────────────────────────────────────
-#  Shared chart styling
-# ──────────────────────────────────────────────
 
 def _chart_style(fig, ax):
     """Apply dark theme so charts match the glassmorphic UI."""
@@ -42,10 +29,6 @@ def _to_b64(buf_bytes):
     """Return base64 string from raw PNG bytes."""
     return base64.b64encode(buf_bytes).decode('utf-8')
 
-
-# ──────────────────────────────────────────────
-#  Category-level charts  (Pie / Bar / Line)
-# ──────────────────────────────────────────────
 
 def get_expense_category_totals(user_id):
     """Return dict {category: total} for expenses."""
@@ -171,27 +154,135 @@ def render_line_chart(category_totals, title='Expenses by Category', color='#818
     return buf.getvalue()
 
 
-# ──────────────────────────────────────────────
-#  AI Model 1 : Linear Regression Forecast
-#               (numpy.polyfit  –  degree 1)
-# ──────────────────────────────────────────────
+def render_merged_bar_chart(expense_totals, income_totals, title='Expense vs Income by Category'):
+    """Render a merged bar chart comparing expenses (red) and income (green)."""
+    buf = io.BytesIO()
+    fig, ax = plt.subplots(figsize=(10, 6), facecolor='#0f172a')
+    _chart_style(fig, ax)
+
+    # Get all unique categories from both
+    all_categories = set(list(expense_totals.keys()) + list(income_totals.keys()))
+    all_categories = sorted(list(all_categories))
+
+    if all_categories:
+        expense_vals = [expense_totals.get(cat, 0) for cat in all_categories]
+        income_vals = [income_totals.get(cat, 0) for cat in all_categories]
+
+        x = np.arange(len(all_categories))
+        width = 0.35
+
+        bars1 = ax.bar(x - width/2, expense_vals, width, label='Expense', 
+                       color='#ef4444', edgecolor='#0f172a', linewidth=1.5, zorder=3)
+        bars2 = ax.bar(x + width/2, income_vals, width, label='Income', 
+                       color='#22c55e', edgecolor='#0f172a', linewidth=1.5, zorder=3)
+
+        # Add value labels on bars
+        for bar, val in zip(bars1, expense_vals):
+            if val > 0:
+                ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max(max(expense_vals), max(income_vals) if income_vals else 0)*0.02,
+                        f'₹{val:,.0f}', ha='center', va='bottom',
+                        color='#e2e8f0', fontsize=8, fontweight='bold')
+
+        for bar, val in zip(bars2, income_vals):
+            if val > 0:
+                ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max(max(expense_vals), max(income_vals) if income_vals else 0)*0.02,
+                        f'₹{val:,.0f}', ha='center', va='bottom',
+                        color='#e2e8f0', fontsize=8, fontweight='bold')
+
+        ax.set_xlabel('Category', fontsize=11)
+        ax.set_ylabel('Amount (₹)', fontsize=11)
+        ax.set_title(title, fontsize=14, fontweight='bold', pad=12)
+        ax.set_xticks(x)
+        ax.set_xticklabels(all_categories, rotation=25, ha='right', fontsize=9)
+        ax.legend(facecolor='#1e293b', edgecolor='#334155', labelcolor='#e2e8f0', fontsize=10, loc='upper left')
+    else:
+        ax.text(0.5, 0.5, 'No data yet.', ha='center', va='center',
+                fontsize=13, color='#94a3b8', transform=ax.transAxes)
+        ax.set_axis_off()
+
+    plt.tight_layout()
+    plt.savefig(buf, format='png', facecolor='#0f172a', edgecolor='none', dpi=120)
+    plt.close(fig)
+    buf.seek(0)
+    return buf.getvalue()
+
+
+def render_merged_line_chart(expense_totals, income_totals, title='Expense vs Income Trend'):
+    """Render a merged line chart comparing expenses (red) and income (blue)."""
+    buf = io.BytesIO()
+    fig, ax = plt.subplots(figsize=(11, 6), facecolor='#0f172a')
+    _chart_style(fig, ax)
+
+    # Get all unique categories from both
+    all_categories = set(list(expense_totals.keys()) + list(income_totals.keys()))
+    all_categories = sorted(list(all_categories))
+
+    if all_categories:
+        expense_vals = [expense_totals.get(cat, 0) for cat in all_categories]
+        income_vals = [income_totals.get(cat, 0) for cat in all_categories]
+
+        x = np.arange(len(all_categories))
+
+        # Plot expense line in red
+        ax.plot(x, expense_vals, marker='o', color='#dc2626', linewidth=2.5,
+                markersize=7, markerfacecolor='#ffffff', markeredgecolor='#dc2626',
+                markeredgewidth=2, label='Expense', zorder=3)
+        ax.fill_between(x, expense_vals, alpha=0.1, color='#dc2626')
+
+        # Plot income line in blue
+        ax.plot(x, income_vals, marker='o', color='#2563eb', linewidth=2.5,
+                markersize=7, markerfacecolor='#ffffff', markeredgecolor='#2563eb',
+                markeredgewidth=2, label='Income', zorder=3)
+        ax.fill_between(x, income_vals, alpha=0.1, color='#2563eb')
+
+        ax.set_xlabel('Category', fontsize=11)
+        ax.set_ylabel('Amount (₹)', fontsize=11)
+        ax.set_title(title, fontsize=14, fontweight='bold', pad=12)
+        ax.set_xticks(x)
+        ax.set_xticklabels(all_categories, rotation=25, ha='right', fontsize=9)
+        ax.legend(facecolor='#1e293b', edgecolor='#334155', labelcolor='#e2e8f0', fontsize=10, loc='upper left')
+    else:
+        ax.text(0.5, 0.5, 'No data yet.', ha='center', va='center',
+                fontsize=13, color='#94a3b8', transform=ax.transAxes)
+        ax.set_axis_off()
+
+    plt.tight_layout()
+    plt.savefig(buf, format='png', facecolor='#0f172a', edgecolor='none', dpi=120)
+    plt.close(fig)
+    buf.seek(0)
+    return buf.getvalue()
+
+
+#  AI Model 1 : Linear Regression Forecast (numpy.polyfit  –  degree 1)
 
 def _get_daily_spending(user_id, days=60):
-    """Aggregate daily spending totals for the last *days* days."""
+    """Fetch daily expense totals directly from spendly.db and return dense day series."""
     from models import Expense
-    cutoff = datetime.now() - timedelta(days=days)
-    expenses = (Expense.query
-                .filter(Expense.user_id == user_id,
-                        Expense.type == 'Expense',
-                        Expense.date >= cutoff)
-                .order_by(Expense.date).all())
+    from sqlalchemy import func
 
-    daily = defaultdict(float)
-    for e in expenses:
-        daily[e.date.strftime('%Y-%m-%d')] += e.amount
+    cutoff = datetime.now() - timedelta(days=days)
+    rows = (Expense.query
+            .with_entities(
+                func.date(Expense.date).label('day'),
+                func.sum(Expense.amount).label('daily_total'),
+                func.count(Expense.id).label('txn_count'),
+            )
+            .filter(Expense.user_id == user_id,
+                    Expense.type == 'Expense',
+                    Expense.date >= cutoff)
+            .group_by(func.date(Expense.date))
+            .order_by(func.date(Expense.date))
+            .all())
+
+    daily = {}
+    txn_count = 0
+    for day, daily_total, count in rows:
+        day_str = str(day)
+        daily[day_str] = float(daily_total or 0)
+        txn_count += int(count or 0)
 
     if not daily:
-        return [], []
+        return [], [], 0
 
     sorted_keys = sorted(daily.keys())
     start = datetime.strptime(sorted_keys[0], '%Y-%m-%d')
@@ -205,31 +296,28 @@ def _get_daily_spending(user_id, days=60):
         amounts.append(daily.get(d, 0))
         cur += timedelta(days=1)
 
-    return dates, amounts
+    return dates, amounts, txn_count
 
 
 def generate_forecast(user_id, forecast_days=7):
-    """
-    AI Model: Linear Regression via numpy.polyfit (degree 1).
-    Returns (chart_b64, insight_text).
-    """
-    dates, amounts = _get_daily_spending(user_id, days=60)
+    """Build forecast from live spendly.db data for the current user."""
+    dates, amounts, txn_count = _get_daily_spending(user_id, days=60)
 
     if len(amounts) < 3:
-        return None, 'Not enough spending data to generate a forecast. Add more expenses!'
+        return None, (
+            f"Auto analysis from spendly.db found only {txn_count} expense transaction(s). "
+            "Add more expenses to generate a forecast."
+        )
 
     x = np.arange(len(amounts), dtype=float)
     y = np.array(amounts, dtype=float)
 
-    # ── Fit linear model ──
     slope, intercept = np.polyfit(x, y, 1)
 
-    # ── Build forecast line ──
     total_len = len(amounts) + forecast_days
     fx = np.arange(total_len, dtype=float)
     fy = slope * fx + intercept
 
-    # ── Draw chart ──
     buf = io.BytesIO()
     fig, ax = plt.subplots(figsize=(10, 5), facecolor='#0f172a')
     _chart_style(fig, ax)
@@ -242,9 +330,9 @@ def generate_forecast(user_id, forecast_days=7):
     ax.axvspan(len(amounts) - 0.5, total_len - 0.5, alpha=0.08, color='#34d399')
     ax.axvline(len(amounts) - 0.5, color='#fbbf24', linewidth=1, linestyle=':', alpha=0.7)
 
-    ax.set_title(f'AI Spending Forecast  (Linear Regression)', fontsize=14, fontweight='bold', pad=12)
+    ax.set_title('Auto Spending Forecast (from spendly.db)', fontsize=14, fontweight='bold', pad=12)
     ax.set_xlabel('Day', fontsize=11)
-    ax.set_ylabel('Amount (₹)', fontsize=11)
+    ax.set_ylabel('Amount (Rs)', fontsize=11)
     ax.legend(facecolor='#1e293b', edgecolor='#334155', labelcolor='#e2e8f0', fontsize=9)
 
     plt.tight_layout()
@@ -252,30 +340,31 @@ def generate_forecast(user_id, forecast_days=7):
     plt.close(fig)
     buf.seek(0)
 
-    # ── Insight text ──
-    direction = 'increasing 📈' if slope > 0 else 'decreasing 📉'
+    direction = 'increasing' if slope > 0 else 'decreasing'
     next_week_est = max(0, sum(fy[-forecast_days:]))
     avg_daily = np.mean(y)
+    start_date = dates[0] if dates else 'N/A'
+    end_date = dates[-1] if dates else 'N/A'
     insight = (
-        f"🤖 <strong>AI Model: Linear Regression (NumPy)</strong><br>"
-        f"Your daily spending is <strong>{direction}</strong> by ~₹{abs(slope):.2f}/day.<br>"
-        f"Average daily spend: <strong>₹{avg_daily:,.2f}</strong><br>"
-        f"Estimated next {forecast_days} days total: <strong>₹{next_week_est:,.2f}</strong>"
+        "<strong>Auto analysis from spendly.db</strong><br>"
+        f"Based on <strong>{txn_count}</strong> expense transaction(s) from "
+        f"<strong>{start_date}</strong> to <strong>{end_date}</strong>.<br>"
+        f"Daily spending is <strong>{direction}</strong> by ~Rs {abs(slope):.2f}/day.<br>"
+        f"Average daily spend: <strong>Rs {avg_daily:,.2f}</strong><br>"
+        f"Estimated next {forecast_days} days total: <strong>Rs {next_week_est:,.2f}</strong>"
     )
 
     return _to_b64(buf.getvalue()), insight
 
 
-# ──────────────────────────────────────────────
 #  AI Model 2 : Z-Score Anomaly Detection
-# ──────────────────────────────────────────────
 
 def detect_anomalies(user_id, threshold=2.0):
     """
     AI Model: Z-Score Anomaly Detection (NumPy).
     Returns list of anomaly dicts with date, amount, z_score.
     """
-    dates, amounts = _get_daily_spending(user_id, days=60)
+    dates, amounts, _ = _get_daily_spending(user_id, days=60)
 
     if len(amounts) < 5:
         return []
@@ -301,41 +390,73 @@ def detect_anomalies(user_id, threshold=2.0):
     return anomalies
 
 
-# ──────────────────────────────────────────────
+
 #  High-level function used by the /charts route
-# ──────────────────────────────────────────────
+
+def render_income_vs_expense_pie(expense_totals, income_totals, title='Income vs Expense'):
+    """Render one pie chart that compares total income and total expense."""
+    total_expense = sum(expense_totals.values()) if expense_totals else 0
+    total_income = sum(income_totals.values()) if income_totals else 0
+
+    buf = io.BytesIO()
+    fig, ax = plt.subplots(figsize=(7, 7), facecolor='#0f172a')
+    ax.set_facecolor('#0f172a')
+
+    if total_expense > 0 or total_income > 0:
+        _, _, autotexts = ax.pie(
+            [total_expense, total_income],
+            labels=['Expense', 'Income'],
+            autopct='%1.1f%%',
+            colors=['#ef4444', '#22c55e'],
+            textprops={'color': '#e2e8f0', 'fontsize': 11},
+            wedgeprops={'edgecolor': '#0f172a', 'linewidth': 2},
+            pctdistance=0.78,
+        )
+        for t in autotexts:
+            t.set_fontsize(9)
+            t.set_color('#0f172a')
+            t.set_fontweight('bold')
+        ax.set_title(title, color='#ffffff', fontsize=16, fontweight='bold', pad=20)
+    else:
+        ax.text(0.5, 0.5, 'No data yet.\nAdd transactions from Dashboard.',
+                ha='center', va='center', fontsize=13, color='#94a3b8',
+                transform=ax.transAxes)
+        ax.set_axis_off()
+
+    plt.tight_layout()
+    plt.savefig(buf, format='png', facecolor='#0f172a', edgecolor='none', dpi=120)
+    plt.close(fig)
+    buf.seek(0)
+    return buf.getvalue()
+
 
 def generate_all_charts(user_id):
-    """
-    Generate all chart data for the charts page.
-    Returns a dict with all base64 images and AI insights.
-    """
+    
     exp_totals = get_expense_category_totals(user_id)
     inc_totals = get_income_category_totals(user_id)
 
+    merged_pie_b64 = _to_b64(render_income_vs_expense_pie(exp_totals, inc_totals, 'Income vs Expense'))
+    merged_bar_b64 = _to_b64(render_merged_bar_chart(exp_totals, inc_totals, 'Income vs Expense by Category'))
+    merged_line_b64 = _to_b64(render_merged_line_chart(exp_totals, inc_totals, 'Income & Expense Comparison'))
+
     result = {
-        # Category charts – expenses
-        'pie_expense_b64':  _to_b64(render_pie_chart(exp_totals, 'Expense Breakdown', _EXPENSE_COLORS)),
-        'bar_expense_b64':  _to_b64(render_bar_chart(exp_totals, 'Expenses by Category', '#818cf8')),
-        'line_expense_b64': _to_b64(render_line_chart(exp_totals, 'Expense Trend by Category', '#818cf8')),
-
-        # Category charts – income
-        'pie_income_b64':  _to_b64(render_pie_chart(inc_totals, 'Income Breakdown', _INCOME_COLORS)),
-        'bar_income_b64':  _to_b64(render_bar_chart(inc_totals, 'Income by Category', '#34d399')),
-        'line_income_b64': _to_b64(render_line_chart(inc_totals, 'Income Trend by Category', '#34d399')),
-
-        # AI Forecast
+        # Feed merged charts into both toggle states for consistent behavior.
+        'pie_expense_b64': merged_pie_b64,
+        'pie_income_b64': merged_pie_b64,
+        'bar_expense_b64': merged_bar_b64,
+        'bar_income_b64': merged_bar_b64,
+        'merged_pie_b64': merged_pie_b64,
+        'merged_bar_b64': merged_bar_b64,
+        'merged_line_b64': merged_line_b64,
         'forecast_b64': None,
         'forecast_insight': '',
-
-        # AI Anomaly Detection
         'anomalies': [],
     }
 
-    # Run AI models
     forecast_b64, forecast_insight = generate_forecast(user_id)
     result['forecast_b64'] = forecast_b64
     result['forecast_insight'] = forecast_insight
     result['anomalies'] = detect_anomalies(user_id)
 
     return result
+

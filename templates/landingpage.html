@@ -1,27 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Spendly</title>
 
-    <!-- Bootstrap CSS -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"
-    />
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spendly</title>
 
-    <style>
-       *,
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+  <style>
+    *,
     *::before,
     *::after {
       box-sizing: border-box;
@@ -36,417 +29,375 @@
       -webkit-font-smoothing: antialiased;
     }
 
-      /* Navbar Styles */
-      .glass-nav {
-        background: rgba(15, 23, 42, 0.75);
-        backdrop-filter: blur(10px);
-        border-bottom: 1px solid rgba(124, 131, 255, 0.25);
-        padding: 15px 30px;
+    /* Navbar Styles */
+    .glass-nav {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(124, 131, 255, 0.25);
+      padding: 15px 30px;
+    }
+
+    .navbar-brand {
+      font-weight: 800;
+      font-size: 24px;
+      background: linear-gradient(135deg, #e5e7ff, #4f46e5, #1e293b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      letter-spacing: -0.5px;
+    }
+
+    .navbar-brand:hover {
+      background: linear-gradient(135deg, #ffffff, #6366f1, #0f172a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .navbar-brand img {
+      width: 32px;
+      height: 32px;
+    }
+
+    .nav-link {
+      color: #c7d2fe !important;
+      font-weight: 500;
+      margin-left: 20px;
+      transition: color 0.3s ease;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      color: #fff !important;
+    }
+
+    .nav-btn {
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-weight: 600;
+      border: none;
+      transition: all 0.3s ease;
+    }
+
+    .nav-btn-primary {
+      background: #7c83ff;
+      color: #fff;
+    }
+
+    .nav-btn-primary:hover {
+      background: #6366f1;
+      color: #fff;
+    }
+
+    .nav-btn-outline {
+      background: transparent;
+      color: #c7d2fe;
+      border: 1.5px solid rgba(124, 131, 255, 0.5);
+    }
+
+    .nav-btn-outline:hover {
+      background: rgba(124, 131, 255, 0.1);
+      border-color: #7c83ff;
+      color: #fff;
+    }
+
+    .hero-btn {
+      padding: 12px 28px;
+      border-radius: 30px;
+      font-weight: 600;
+    }
+
+    .glass-card {
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(124, 131, 255, 0.35);
+      border-radius: 16px;
+    }
+
+    .brand-color {
+      color: #7c83ff;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0px);
       }
 
-      .navbar-brand {
-        font-weight: 800;
-        font-size: 24px;
-        background: linear-gradient(135deg, #e5e7ff, #4f46e5, #1e293b);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        letter-spacing: -0.5px;
+      50% {
+        transform: translateY(-15px);
       }
 
-      .navbar-brand:hover {
-        background: linear-gradient(135deg, #ffffff, #6366f1, #0f172a);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+      100% {
+        transform: translateY(0px);
+      }
+    }
+
+    .floating-card {
+      animation: float 4s ease-in-out infinite;
+    }
+
+    /* About Section Styles */
+    .about-section {
+      min-height: 100vh;
+      padding: 80px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .about-content h2 {
+      font-size: 48px;
+      font-weight: 700;
+      margin-bottom: 30px;
+    }
+
+    .about-content p {
+      font-size: 18px;
+      color: #c7d2fe;
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+
+    /* Horizontal Slider */
+    .slider-container {
+      margin-top: 60px;
+      overflow-x: auto;
+      padding: 20px 0;
+      scroll-behavior: smooth;
+    }
+
+    .slider-container::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    .slider-container::-webkit-scrollbar-track {
+      background: rgba(124, 131, 255, 0.1);
+      border-radius: 4px;
+    }
+
+    .slider-container::-webkit-scrollbar-thumb {
+      background: #7c83ff;
+      border-radius: 4px;
+    }
+
+    .slider-container::-webkit-scrollbar-thumb:hover {
+      background: #6366f1;
+    }
+
+    .slider-wrapper {
+      display: flex;
+      gap: 25px;
+      min-width: min-content;
+      padding: 10px 0;
+    }
+
+    .slider-card {
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(124, 131, 255, 0.35);
+      border-radius: 16px;
+      padding: 30px;
+      min-width: 300px;
+      flex-shrink: 0;
+      transition: all 0.3s ease;
+    }
+
+    .slider-card:hover {
+      background: rgba(15, 23, 42, 0.8);
+      border-color: rgba(124, 131, 255, 0.6);
+      transform: translateY(-10px);
+    }
+
+    .slider-card i {
+      font-size: 48px;
+      color: #7c83ff;
+      margin-bottom: 15px;
+      display: block;
+    }
+
+    .slider-card h4 {
+      color: #fff;
+      font-weight: 600;
+      margin-bottom: 10px;
+      font-size: 20px;
+    }
+
+    .slider-card p {
+      color: #a5aec7;
+      font-size: 14px;
+      margin: 0;
+    }
+
+    @keyframes slideInLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-50px);
       }
 
-      .navbar-brand img {
-        width: 32px;
-        height: 32px;
+      to {
+        opacity: 1;
+        transform: translateX(0);
       }
+    }
 
-      .nav-link {
-        color: #c7d2fe !important;
-        font-weight: 500;
-        margin-left: 20px;
-        transition: color 0.3s ease;
-      }
+    .about-section {
+      animation: slideInLeft 0.8s ease-out;
+    }
+  </style>
+</head>
 
-      .nav-link:hover,
-      .nav-link.active {
-        color: #fff !important;
-      }
+<body>
+  {% include "_navbar.html" %}
 
-      .nav-btn {
-        padding: 8px 20px;
-        border-radius: 20px;
-        font-weight: 600;
-        border: none;
-        transition: all 0.3s ease;
-      }
+  <section class="d-flex align-items-center" style="min-height: 100vh">
+    <div class="container">
+      <div class="row align-items-center justify-content-between">
 
-      .nav-btn-primary {
-        background: #7c83ff;
-        color: #fff;
-      }
-
-      .nav-btn-primary:hover {
-        background: #6366f1;
-        color: #fff;
-      }
-
-      .nav-btn-outline {
-        background: transparent;
-        color: #c7d2fe;
-        border: 1.5px solid rgba(124, 131, 255, 0.5);
-      }
-
-      .nav-btn-outline:hover {
-        background: rgba(124, 131, 255, 0.1);
-        border-color: #7c83ff;
-        color: #fff;
-      }
-      
-      .hero-btn {
-        padding: 12px 28px;
-        border-radius: 30px;
-        font-weight: 600;
-      }
-
-      .glass-card {
-        background: rgba(15, 23, 42, 0.6);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(124, 131, 255, 0.35);
-        border-radius: 16px;
-      }
-
-      .brand-color {
-        color: #7c83ff;
-      }
-      @keyframes float {
-        0% {
-          transform: translateY(0px);
-        }
-        50% {
-          transform: translateY(-15px);
-        }
-        100% {
-          transform: translateY(0px);
-        }
-      }
-
-      .floating-card {
-        animation: float 4s ease-in-out infinite;
-      }
-
-      /* About Section Styles */
-      .about-section {
-        min-height: 100vh;
-        padding: 80px 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .about-content h2 {
-        font-size: 48px;
-        font-weight: 700;
-        margin-bottom: 30px;
-      }
-
-      .about-content p {
-        font-size: 18px;
-        color: #c7d2fe;
-        line-height: 1.8;
-        margin-bottom: 20px;
-      }
-
-      /* Horizontal Slider */
-      .slider-container {
-        margin-top: 60px;
-        overflow-x: auto;
-        padding: 20px 0;
-        scroll-behavior: smooth;
-      }
-
-      .slider-container::-webkit-scrollbar {
-        height: 8px;
-      }
-
-      .slider-container::-webkit-scrollbar-track {
-        background: rgba(124, 131, 255, 0.1);
-        border-radius: 4px;
-      }
-
-      .slider-container::-webkit-scrollbar-thumb {
-        background: #7c83ff;
-        border-radius: 4px;
-      }
-
-      .slider-container::-webkit-scrollbar-thumb:hover {
-        background: #6366f1;
-      }
-
-      .slider-wrapper {
-        display: flex;
-        gap: 25px;
-        min-width: min-content;
-        padding: 10px 0;
-      }
-
-      .slider-card {
-        background: rgba(15, 23, 42, 0.6);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(124, 131, 255, 0.35);
-        border-radius: 16px;
-        padding: 30px;
-        min-width: 300px;
-        flex-shrink: 0;
-        transition: all 0.3s ease;
-      }
-
-      .slider-card:hover {
-        background: rgba(15, 23, 42, 0.8);
-        border-color: rgba(124, 131, 255, 0.6);
-        transform: translateY(-10px);
-      }
-
-      .slider-card i {
-        font-size: 48px;
-        color: #7c83ff;
-        margin-bottom: 15px;
-        display: block;
-      }
-
-      .slider-card h4 {
-        color: #fff;
-        font-weight: 600;
-        margin-bottom: 10px;
-        font-size: 20px;
-      }
-
-      .slider-card p {
-        color: #a5aec7;
-        font-size: 14px;
-        margin: 0;
-      }
-
-      @keyframes slideInLeft {
-        from {
-          opacity: 0;
-          transform: translateX(-50px);
-        }
-        to {
-          opacity: 1;
-          transform: translateX(0);
-        }
-      }
-
-      .about-section {
-        animation: slideInLeft 0.8s ease-out;
-      }
-    </style>
-  </head>
-  <body>
-    <!-- ================= NAVBAR ================= -->
-    <nav class="navbar navbar-expand-lg glass-nav px-4">
-      <div class="navbar-brand">
-        <img  src="{{ url_for('static', filename='img.png') }}" alt="Spendly Logo" />
-        <a href="/">Spendly</a>
-      </div>
-
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navMenu"
-        style="border-color: rgba(124, 131, 255, 0.5);"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <div class="collapse navbar-collapse" id="navMenu">
-        <ul class="navbar-nav ms-auto align-items-center">
-          <li class="nav-item">
-            <a class="nav-link" href="/">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#about">About</a>
-          </li>
-          <li class="nav-item ms-3">
-            <a href="/login" class="btn nav-btn nav-btn-outline">Login</a>
-          </li>
-          <li class="nav-item ms-2">
-            <a href="/sign-up" class="btn nav-btn nav-btn-primary">Sign Up</a>
-          </li>
-        </ul>
-      </div>
-    </nav>
-
-    <section class="d-flex align-items-center" style="min-height: 100vh">
-      <div class="container">
-        <div class="row align-items-center justify-content-between">
-          <!-- Left Content -->
-          <div class="col-md-6">
-            <h1 class="fw-bold">
-              Manage Your Money<br />
-              <span class="brand-color">Effortlessly</span>
-            </h1>
-            <p class="mt-3 text-secondary">
-              Track expenses, analyze spending, and stay financially disciplined
-              with a clean and modern expense tracker.
-            </p>
-
-            <div class="d-flex gap-3 mt-4">
-              <a href="/sign-up" class="btn btn-primary hero-btn"
-                >Create Free Account</a
-              >
-              <a href="/login" class="btn btn-outline-light hero-btn"
-                >Login</a
-              >
-            </div>
-
-            <div class="row mt-5 pt-3">
-              <div class="col-4">
-                <i
-                  class="bi bi-lightning-charge-fill text-warning fs-4 mb-2"
-                ></i>
-                <h5 class="fw-bold mb-1">Fast</h5>
-                <p class="small">Quick entry</p>
-              </div>
-              <div class="col-4">
-                <i class="bi bi-shield-lock-fill text-info fs-4 mb-2"></i>
-                <h5 class="fw-bold mb-1">Secure</h5>
-                <p class="small">Encrypted data</p>
-              </div>
-              <div class="col-4">
-                <i class="bi bi-graph-up-arrow text-success fs-4 mb-2"></i>
-                <h5 class="fw-bold mb-1">Smart</h5>
-                <p class="small">Clear insights</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Right Card -->
-          <div class="col-md-5 mt-5 mt-md-0">
-            <div class="glass-card p-4 shadow-lg floating-card">
-              <h5 class="fw-semibold mb-3">Why choose this app?</h5>
-              <ul class="mb-0 text-secondary">
-                <li>Dark & minimal UI (easy on eyes)</li>
-                <li>Perfect for students & beginners</li>
-                <li>Python + DBMS backend ready</li>
-                <li>College project friendly structure</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ================= ABOUT SECTION ================= -->
-    <section class="about-section" id="about">
-      <div class="container">
-        <div class="about-content">
-          <h2>About <span class="brand-color">Spendly</span></h2>
-          <p>
-            Spendly is a modern, intuitive expense tracker designed for everyone. Whether you're a student managing your pocket money, a professional tracking your finances, or a family coordinating household expenses, Spendly makes financial management simple and enjoyable.
-          </p>
-          <p>
-            Our mission is to empower individuals with the tools and insights they need to take control of their financial lives. We believe that smart money management should be accessible, engaging, and straightforward.
+        <div class="col-md-6">
+          <h1 class="fw-bold">
+            Manage Your Money<br />
+            <span class="brand-color">Effortlessly</span>
+          </h1>
+          <p class="mt-3 text-secondary">
+            Track expenses, analyze spending, and stay financially disciplined
+            with a clean and modern expense tracker.
           </p>
 
-          <h4 class="mt-5 mb-4" style="color: #7c83ff; font-size: 24px;">Why Choose <span class="brand-color">Spendly</span>?</h4>
-          
-          <div class="slider-container">
-            <div class="slider-wrapper">
-              <div class="slider-card">
-                <i class="bi bi-lightning-charge-fill"></i>
-                <h4>Fast & Intuitive</h4>
-                <p>Add expenses in seconds with our streamlined interface. Quick entry, zero complexity.</p>
-              </div>
+          <div class="d-flex gap-3 mt-4">
+            <a href="/sign-up" class="btn btn-primary hero-btn">Create Free Account</a>
+            <a href="/login" class="btn btn-outline-light hero-btn">Login</a>
+          </div>
 
-              <div class="slider-card">
-                <i class="bi bi-shield-lock-fill"></i>
-                <h4>Secure & Private</h4>
-                <p>Your data is encrypted and stored securely. We respect your privacy above all.</p>
-              </div>
-
-              <div class="slider-card">
-                <i class="bi bi-graph-up-arrow"></i>
-                <h4>Smart Analytics</h4>
-                <p>Get clear insights into your spending patterns with beautiful visualizations.</p>
-              </div>
-
-              <div class="slider-card">
-                <i class="bi bi-palette-fill"></i>
-                <h4>Dark Mode UI</h4>
-                <p>Easy on the eyes with our modern dark interface design. Built for comfort.</p>
-              </div>
-
-              <div class="slider-card">
-                <i class="bi bi-folder2-open"></i>
-                <h4>Category Management</h4>
-                <p>Organize expenses by categories and track income sources effortlessly.</p>
-              </div>
-
-              <div class="slider-card">
-                <i class="bi bi-phone-fill"></i>
-                <h4>Mobile Friendly</h4>
-                <p>Access your finances anywhere, anytime on any device. Fully responsive design.</p>
-              </div>
+          <div class="row mt-5 pt-3">
+            <div class="col-4">
+              <i class="bi bi-lightning-charge-fill text-warning fs-4 mb-2"></i>
+              <h5 class="fw-bold mb-1">Fast</h5>
+              <p class="small">Quick entry</p>
+            </div>
+            <div class="col-4">
+              <i class="bi bi-shield-lock-fill text-info fs-4 mb-2"></i>
+              <h5 class="fw-bold mb-1">Secure</h5>
+              <p class="small">Encrypted data</p>
+            </div>
+            <div class="col-4">
+              <i class="bi bi-graph-up-arrow text-success fs-4 mb-2"></i>
+              <h5 class="fw-bold mb-1">Smart</h5>
+              <p class="small">Clear insights</p>
             </div>
           </div>
+        </div>
 
-          <div class="glass-card p-4 mt-5">
-            <h4 style="color: #7c83ff; margin-bottom: 15px;">Built With Modern Technology</h4>
-            <p style="margin: 0;">
-              Spendly is built using Flask (Python backend), SQLite database, and Bootstrap frontend. This ensures reliability, speed, and a seamless user experience. Perfect for students, professionals, and anyone serious about managing their finances.
-            </p>
+        <!-- Right Card -->
+        <div class="col-md-5 mt-5 mt-md-0">
+          <div class="glass-card p-4 shadow-lg floating-card">
+            <h5 class="fw-semibold mb-3">Why choose this app?</h5>
+            <ul class="mb-0 text-secondary">
+              <li>Dark & minimal UI (easy on eyes)</li>
+              <li>Perfect for students & beginners</li>
+              <li>Python + DBMS backend ready</li>
+              <li>College project friendly structure</li>
+            </ul>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- ================= TEAM/CREDITS SECTION ================= -->
-    <section style="padding: 35px 20px; background: rgba(15, 23, 42, 0.4); border-top: 1px solid rgba(124, 131, 255, 0.2);">
-      <div class="container">
-        <h3 style="text-align: center; font-size: 18px; margin-bottom: 20px; color: #fff;">
-          Core <span class="brand-color">Team</span>
-        </h3>
+  <!-- ================= ABOUT SECTION ================= -->
+  <section class="about-section" id="about">
+    <div class="container">
+      <div class="about-content">
+        <h2>About <span class="brand-color">Spendly</span></h2>
+        <p>
+          Spendly is a modern, intuitive expense tracker designed for everyone. Whether you're a student managing your
+          pocket money, a professional tracking your finances, or a family coordinating household expenses, Spendly
+          makes financial management simple and enjoyable.
+        </p>
+        <p>
+          Our mission is to empower individuals with the tools and insights they need to take control of their financial
+          lives. We believe that smart money management should be accessible, engaging, and straightforward.
+        </p>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; max-width: 700px; margin: 0 auto;">
-          <!-- Team Member 1 -->
-          <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(124, 131, 255, 0.25); border-radius: 8px; padding: 10px; text-align: center;">
-            <div style="font-size: 20px; margin-bottom: 5px;">👨‍💻</div>
-            <h4 style="color: #fff; font-weight: 600; margin: 3px 0; font-size: 12px;">Shreya Jolapara</h4>
-            <p style="color: #7c83ff; font-weight: 600; margin: 2px 0; font-size: 10px;">Full Stack Dev</p>
-            <a href="https://github.com/Shreya-J-5" target="_blank" style="color: #7c83ff; text-decoration: none; font-weight: 600; font-size: 10px;">GitHub</a>
-          </div>
+        <h4 class="mt-5 mb-4" style="color: #7c83ff; font-size: 24px;">Why Choose <span
+            class="brand-color">Spendly</span>?</h4>
 
-          <!-- Team Member 2 -->
-          <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(124, 131, 255, 0.25); border-radius: 8px; padding: 10px; text-align: center;">
-            <div style="font-size: 20px; margin-bottom: 5px;">👨‍💼</div>
-            <h4 style="color: #fff; font-weight: 600; margin: 3px 0; font-size: 12px;">Nisarg Talsaniya</h4>
-            <p style="color: #7c83ff; font-weight: 600; margin: 2px 0; font-size: 10px;">Frontend Dev(major)</p>
-            <a href="https://github.com" target="_blank" style="color: #7c83ff; text-decoration: none; font-weight: 600; font-size: 10px;">GitHub</a>
-          </div>
+        <div class="slider-container">
+          <div class="slider-wrapper">
+            <div class="slider-card">
+              <i class="bi bi-lightning-charge-fill"></i>
+              <h4>Fast & Intuitive</h4>
+              <p>Add expenses in seconds with our streamlined interface. Quick entry, zero complexity.</p>
+            </div>
 
-          <!-- Team Member 3 -->
-          <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(124, 131, 255, 0.25); border-radius: 8px; padding: 10px; text-align: center;">
-            <div style="font-size: 20px; margin-bottom: 5px;">👨‍🔬</div>
-            <h4 style="color: #fff; font-weight: 600; margin: 3px 0; font-size: 12px;">Milan Patel</h4>
-            <p style="color: #7c83ff; font-weight: 600; margin: 2px 0; font-size: 10px;">Full Stack Dev</p>
-            <a href="https://github.com" target="_blank" style="color: #7c83ff; text-decoration: none; font-weight: 600; font-size: 10px;">GitHub</a>
+            <div class="slider-card">
+              <i class="bi bi-shield-lock-fill"></i>
+              <h4>Secure & Private</h4>
+              <p>Your data is encrypted and stored securely. We respect your privacy above all.</p>
+            </div>
+
+            <div class="slider-card">
+              <i class="bi bi-graph-up-arrow"></i>
+              <h4>Smart Analytics</h4>
+              <p>Get clear insights into your spending patterns with beautiful visualizations.</p>
+            </div>
+
+            <div class="slider-card">
+              <i class="bi bi-palette-fill"></i>
+              <h4>Dark Mode UI</h4>
+              <p>Easy on the eyes with our modern dark interface design. Built for comfort.</p>
+            </div>
+
+            <div class="slider-card">
+              <i class="bi bi-folder2-open"></i>
+              <h4>Category Management</h4>
+              <p>Organize expenses by categories and track income sources effortlessly.</p>
+            </div>
+
+            <div class="slider-card">
+              <i class="bi bi-phone-fill"></i>
+              <h4>Mobile Friendly</h4>
+              <p>Access your finances anywhere, anytime on any device. Fully responsive design.</p>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ url_for('static', filename='index.js') }}"></script>
-  </body>
+        <div class="glass-card p-4 mt-5">
+          <h4 style="color: #7c83ff; margin-bottom: 15px;">Built With Modern Technology</h4>
+          <p style="margin: 0;">
+            Spendly is built using Flask (Python backend), SQLite database, and Bootstrap frontend. This ensures
+            reliability, speed, and a seamless user experience. Perfect for students, professionals, and anyone serious
+            about managing their finances.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section
+    style="padding: 35px 20px; background: rgba(15, 23, 42, 0.4); border-top: 1px solid rgba(124, 131, 255, 0.2);">
+    <div class="container">
+
+      <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; max-width: 700px; margin: 0 auto;">
+
+        <div
+          style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(124, 131, 255, 0.25); border-radius: 8px; padding: 10px; text-align: center;">
+
+          <h4 style="color: #fff; font-weight: 600; margin: 3px 0; font-size: 12px;">Shreya Jolapara</h4>
+          <p style="color: #7c83ff; font-weight: 600; margin: 2px 0; font-size: 10px;">Full Stack Dev</p>
+          <a href="https://github.com/Shreya-J-5" target="_blank"
+            style="color: #7c83ff; text-decoration: none; font-weight: 600; font-size: 10px;">GitHub</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ url_for('static', filename='index.js') }}"></script>
+</body>
+
 </html>

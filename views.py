@@ -1,15 +1,15 @@
 import base64
 import io
 import json
-import random
 from datetime import datetime
 
 from flask import Blueprint, Response, render_template, request, flash, jsonify, send_file, redirect, url_for
 from flask_login import login_required, current_user
+from sqlalchemy import or_
 
 from models import Note, Expense, Account
 from __init__ import db
-from ai_models import generate_all_charts, render_pie_chart, render_bar_chart, render_line_chart, get_expense_category_totals
+from ai_models import generate_all_charts, render_pie_chart, render_bar_chart, render_line_chart, get_expense_category_totals, get_income_category_totals, render_merged_bar_chart, render_merged_line_chart
 
 views = Blueprint('views', __name__)
 
@@ -17,15 +17,8 @@ views = Blueprint('views', __name__)
 @views.route('/profile')
 @login_required
 def profile():
-    profile_pics = [
-        'https://randomuser.me/api/portraits/men/1.jpg',
-        'https://randomuser.me/api/portraits/women/2.jpg',
-        'https://randomuser.me/api/portraits/men/3.jpg',
-        'https://randomuser.me/api/portraits/women/4.jpg',
-        'https://randomuser.me/api/portraits/men/5.jpg',
-        'https://randomuser.me/api/portraits/women/6.jpg',
-    ]
-    profile_pic_url = random.choice(profile_pics)
+    # Use a fixed dark anonymous avatar so it stays consistent across reloads.
+    profile_pic_url = url_for('static', filename='anonymous-avatar.svg')
     return render_template(
         'profile.html',
         user=current_user,
@@ -59,6 +52,22 @@ def expense_bar_chart():
 def expense_line_chart():
     totals = get_expense_category_totals(current_user.id)
     return send_file(io.BytesIO(render_line_chart(totals)), mimetype='image/png')
+
+
+@views.route('/merged_bar_chart')
+@login_required
+def merged_bar_chart():
+    exp_totals = get_expense_category_totals(current_user.id)
+    inc_totals = get_income_category_totals(current_user.id)
+    return send_file(io.BytesIO(render_merged_bar_chart(exp_totals, inc_totals)), mimetype='image/png')
+
+
+@views.route('/merged_line_chart')
+@login_required
+def merged_line_chart():
+    exp_totals = get_expense_category_totals(current_user.id)
+    inc_totals = get_income_category_totals(current_user.id)
+    return send_file(io.BytesIO(render_merged_line_chart(exp_totals, inc_totals)), mimetype='image/png')
 
 
 
@@ -132,6 +141,36 @@ def delete_account(account_id):
         db.session.rollback()
         flash(f'Error: {str(e)}', category='error')
     return redirect(url_for('views.accounts'))
+
+
+@views.route('/accounts/<int:account_id>/history', methods=['GET'])
+@login_required
+def account_history(account_id):
+    account = Account.query.get(account_id)
+    if not account or account.user_id != current_user.id:
+        flash('Account not found.', category='error')
+        return redirect(url_for('views.accounts'))
+
+    # Primary match uses account id stored in payment_mode; name fallback keeps older data visible.
+    transactions = (Expense.query
+                    .filter(Expense.user_id == current_user.id)
+                    .filter(or_(Expense.payment_mode == str(account.id),
+                                Expense.payment_mode == account.name))
+                    .order_by(Expense.date.desc())
+                    .all())
+
+    total_income = sum(t.amount for t in transactions if t.type == 'Income')
+    total_expense = sum(t.amount for t in transactions if t.type == 'Expense')
+
+    return render_template(
+        'account_history.html',
+        user=current_user,
+        account=account,
+        transactions=transactions,
+        total_income=total_income,
+        total_expense=total_expense,
+        net_balance=total_income - total_expense,
+    )
 
 
 @views.route('/reports')

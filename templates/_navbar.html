@@ -1,98 +1,184 @@
-<!-- PREMIUM NAVBAR -->
-<nav class="navbar navbar-expand-lg navbar-dark premium-navbar px-4">
-    <div class="container-fluid">
+<style>
+  #shared-app-navbar {
+    --nav-bg: rgba(8, 12, 25, 0.65);
+    --nav-border: rgba(99, 102, 241, 0.15);
+    --link: #94a3b8;
+    --link-active-bg: rgba(99, 102, 241, 0.15);
+    --link-active: #ffffff;
+    --dropdown-bg: rgba(15, 23, 42, 0.95);
+    --dropdown-border: rgba(99, 102, 241, 0.3);
+    --font: system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--nav-bg) !important;
+    backdrop-filter: blur(24px) saturate(1.6) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(1.6) !important;
+    border-bottom: 1px solid var(--nav-border) !important;
+    padding: 12px 28px !important;
+    min-height: 72px;
+    font-family: var(--font) !important;
+    box-sizing: border-box;
+  }
 
-        <a class="navbar-brand d-flex align-items-center gap-2 fw-bold fs-4"
-           href="{{ url_for('dashboard') }}">
-            <img src="{{ url_for('static', filename='images/logo.png') }}"
-                 width="35">
-            <span class="brand-text">Spendly</span>
-        </a>
+  #shared-app-navbar * {
+    box-sizing: border-box;
+    font-family: inherit !important;
+  }
 
-        <div class="collapse navbar-collapse justify-content-end">
-            <ul class="navbar-nav align-items-center gap-3">
-
-                <li class="nav-item">
-                    <a class="nav-link {% if request.endpoint == 'dashboard' %}active-nav{% endif %}"
-                       href="{{ url_for('dashboard') }}">
-                        <i class="bi bi-speedometer2 me-1"></i> Dashboard
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link {% if request.endpoint == 'accounts' %}active-nav{% endif %}"
-                       href="{{ url_for('accounts') }}">
-                        <i class="bi bi-wallet2 me-1"></i> Accounts
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link {% if request.endpoint == 'charts' %}active-nav{% endif %}"
-                       href="{{ url_for('charts') }}">
-                        <i class="bi bi-bar-chart-line me-1"></i> Charts
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link {% if request.endpoint == 'reports' %}active-nav{% endif %}"
-                       href="{{ url_for('reports') }}">
-                        <i class="bi bi-file-earmark-text me-1"></i> Reports
-                    </a>
-                </li>
-
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle"
-                       href="#"
-                       data-bs-toggle="dropdown">
-                        <i class="bi bi-person-circle"></i> {{ session.get('username', 'User') }}
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
-                    </ul>
-                </li>
-
-            </ul>
-        </div>
-    </div>
-</nav>
-
-<!-- <style>
-    /* PREMIUM NAVBAR STYLE */
-
-.premium-navbar {S
-    background: linear-gradient(
-        90deg,
-        #050c1f 0%,
-        #0b1a3a 40%,
-        #050c1f 100%
-    );
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    padding-top: 12px;
-    padding-bottom: 12px;
-}
-
-.brand-text {
-    background: linear-gradient(90deg, #5f6fff, #6dd5ed);
+  #shared-app-navbar .shared-navbar-brand {
+    font-weight: 800 !important;
+    font-size: 22px !important;
+    line-height: 1 !important;
+    letter-spacing: -0.5px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    text-decoration: none !important;
+    background: linear-gradient(135deg, #e5e7ff, #4f46e5, #1e293b);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-}
+    background-clip: text;
+    margin: 0;
+    padding: 0;
+  }
 
-.nav-link {
-    color: #b8c0ff !important;
-    font-weight: 500;
-    transition: 0.3s ease;
-    padding: 8px 14px;
-    border-radius: 8px;
-}
+  #shared-app-navbar .shared-navbar-brand:hover {
+    background: linear-gradient(135deg, #ffffff, #6366f1, #0f172a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 
-.nav-link:hover {
-    color: white !important;
-    background: rgba(255,255,255,0.05);
-}
+  #shared-app-navbar .shared-navbar-logo {
+    width: 45px !important;
+    height: 45px !important;
+    display: block;
+    flex: 0 0 auto;
+  }
 
-.active-nav {
-    background: rgba(92, 112, 255, 0.15);
-    color: #ffffff !important;
-    font-weight: 600;
-}
-</style> -->
+  #shared-app-navbar .shared-nav-collapse {
+    justify-content: flex-end !important;
+  }
+
+  #shared-app-navbar .shared-nav-list {
+    display: flex !important;
+    align-items: center !important;
+    margin-left: auto !important;
+    margin-bottom: 0 !important;
+    padding-left: 0 !important;
+    gap: 2px !important;
+    list-style: none !important;
+  }
+
+  #shared-app-navbar .nav-item {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  #shared-app-navbar .shared-nav-link {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    color: var(--link) !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    line-height: 1.2 !important;
+    padding: 8px 14px !important;
+    border-radius: 10px !important;
+    margin: 0 !important;
+    text-decoration: none !important;
+    transition: all 0.25s ease !important;
+    white-space: nowrap;
+  }
+
+  #shared-app-navbar .shared-nav-link.active,
+  #shared-app-navbar .shared-nav-link:hover,
+  #shared-app-navbar .shared-nav-link:focus {
+    color: var(--link-active) !important;
+    background: var(--link-active-bg) !important;
+  }
+
+  #shared-app-navbar .shared-dropdown-menu {
+    background: var(--dropdown-bg) !important;
+    border: 1px solid var(--dropdown-border) !important;
+  }
+
+  #shared-app-navbar .shared-dropdown-item {
+    color: #c7d2fe !important;
+  }
+
+  #shared-app-navbar .shared-dropdown-divider {
+    border-color: rgba(99, 102, 241, 0.2) !important;
+  }
+
+  @media (max-width: 991.98px) {
+    #shared-app-navbar .shared-nav-list {
+      width: 100%;
+      margin-top: 10px;
+      flex-direction: column;
+      align-items: flex-start !important;
+      gap: 6px !important;
+    }
+  }
+</style>
+
+<nav id="shared-app-navbar" class="navbar navbar-expand-lg">
+  <a class="shared-navbar-brand" href="{{ url_for('views.dashboard') }}">
+    <img class="shared-navbar-logo" src="{{ url_for('static', filename='img.png') }}" alt="Logo">
+    Spendly
+  </a>
+
+  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"
+    data-toggle="collapse" data-target="#navMenu">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  {% set current_path = request.path %}
+  <div class="collapse navbar-collapse shared-nav-collapse" id="navMenu">
+    <ul class="shared-nav-list">
+      {% if user is defined and user and user.is_authenticated %}
+      <li class="nav-item">
+        <a class="shared-nav-link {% if current_path == '/dashboard' %}active{% endif %}"
+          href="{{ url_for('views.dashboard') }}">
+          <i class="bi bi-speedometer2"></i> Dashboard
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="shared-nav-link {% if current_path == '/accounts' or current_path.startswith('/accounts/') %}active{% endif %}"
+          href="{{ url_for('views.accounts') }}">
+          <i class="bi bi-wallet2"></i> Accounts
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="shared-nav-link {% if current_path == '/charts' %}active{% endif %}"
+          href="{{ url_for('views.charts') }}">
+          <i class="bi bi-bar-chart"></i> Charts
+        </a>
+      </li>
+
+      <li class="nav-item dropdown">
+        <a class="shared-nav-link dropdown-toggle {% if current_path == '/profile' %}active{% endif %}" href="#"
+          id="navbarDropdown" role="button" data-bs-toggle="dropdown" data-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-person-circle"></i> {{ user.first_name }}
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end shared-dropdown-menu" aria-labelledby="navbarDropdown">
+          <li><a class="dropdown-item shared-dropdown-item" href="{{ url_for('views.profile') }}">Profile</a></li>
+          <li>
+            <hr class="dropdown-divider shared-dropdown-divider">
+          </li>
+          <li><a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}"
+              onclick="return confirm('Are you sure you want to logout?')">Logout</a></li>
+        </ul>
+      </li>
+      {% else %}
+      <li class="nav-item">
+        <a class="shared-nav-link {% if current_path == '/' %}active{% endif %}" href="{{ url_for('views.landing') }}">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="shared-nav-link {% if current_path == '/login' %}active{% endif %}" href="{{ url_for('auth.login') }}">Login</a>
+      </li>
+      <li class="nav-item">
+        <a class="shared-nav-link {% if current_path == '/sign-up' %}active{% endif %}" href="{{ url_for('auth.sign_up') }}">Sign Up</a>
+      </li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>

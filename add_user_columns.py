@@ -1,4 +1,3 @@
-"""One-time script: add gender and number columns to user table if missing."""
 import sqlite3
 import os
 

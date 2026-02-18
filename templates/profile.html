@@ -84,7 +84,7 @@
       max-width: 400px;
       margin: 40px auto;
       box-shadow: 0 8px 32px rgba(124, 131, 255, 0.15);
-      text-align: center;
+      text-align: left;
     }
 
     .profile-pic {
@@ -92,13 +92,22 @@
       height: 110px;
       border-radius: 50%;
       object-fit: cover;
-      margin-bottom: 1.5rem;
+      margin: 0 auto 1.25rem auto;
+      display: block;
       border: 4px solid #7c83ff;
+    }
+
+    .profile-name {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin: 0 0 1.2rem 0;
+      text-align: center;
     }
 
     .profile-info {
       font-size: 1.1rem;
       margin-bottom: 0.7rem;
+      text-align: left;
     }
 
     .profile-label {
@@ -109,45 +118,12 @@
 </head>
 
 <body>
-  <!-- ===== NAVBAR ===== -->
-  <nav class="navbar navbar-expand-lg glass-nav px-4">
-    <a class="navbar-brand fw-bold" href="/dashboard">
-      <img src="{{ url_for('static', filename='img.png') }}" alt="Logo">
-      Spendly
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navMenu">
-      <ul class="navbar-nav ms-auto align-items-center">
-        <li class="nav-item"><a class="nav-link" href="/dashboard"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
-        <li class="nav-item"><a class="nav-link" href="/accounts"><i class="bi bi-wallet2"></i> Accounts</a></li>
-        <li class="nav-item"><a class="nav-link" href="/charts"><i class="bi bi-bar-chart"></i> Charts</a></li>
-        <li class="nav-item"><a class="nav-link" href="/reports"><i class="bi bi-file-earmark-bar-graph"></i>
-            Reports</a></li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
-            aria-expanded="false">
-            <i class="bi bi-person-circle"></i> {{ user.first_name }}
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown"
-            style="background:rgba(15,23,42,0.95);border:1px solid rgba(99,102,241,0.3);">
-            <li><a class="dropdown-item" href="/profile" style="color:#c7d2fe;">Profile</a></li>
-            <li>
-              <hr class="dropdown-divider" style="border-color:rgba(99,102,241,0.2);">
-            </li>
-            <li><a class="dropdown-item text-danger" href="/logout"
-                onclick="return confirm('Are you sure you want to logout?')">Logout</a></li>
-          </ul>
-        </li>
-      </ul>
-    </div>
-  </nav>
+  {% include "_navbar.html" %}
 
   <div class="container mt-5">
     <div class="profile-card">
       <img src="{{ profile_pic_url }}" class="profile-pic" alt="Profile Picture">
-      <h3 class="mb-3">{{ user.first_name }}</h3>
+      <h3 class="profile-name">{{ user.first_name }}</h3>
       <div class="profile-info"><span class="profile-label">Email:</span> {{ user.email }}</div>
       <div class="profile-info"><span class="profile-label">Gender:</span> {{ user.gender }}</div>
       <div class="profile-info"><span class="profile-label">Number:</span> {{ user.number }}</div>

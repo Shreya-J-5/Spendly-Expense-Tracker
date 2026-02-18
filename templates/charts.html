@@ -10,7 +10,6 @@
     rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
   <style>
-    /* ===== BASE ===== */
     *,
     *::before,
     *::after {
@@ -26,7 +25,6 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ===== GLASS NAV ===== */
     .glass-nav {
       background: rgba(8, 12, 25, 0.65);
       backdrop-filter: blur(24px) saturate(1.6);
@@ -68,7 +66,6 @@
       background: rgba(99, 102, 241, 0.15);
     }
 
-    /* ===== GLASS CARD ===== */
     .glass-card {
       background: rgba(15, 23, 42, 0.55);
       backdrop-filter: blur(20px) saturate(1.4);
@@ -89,7 +86,6 @@
         inset 0 1px 0 rgba(255, 255, 255, 0.06);
     }
 
-    /* ===== SECTION HEADER ===== */
     .section-title {
       font-size: 20px;
       font-weight: 700;
@@ -141,7 +137,6 @@
       box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
     }
 
-    /* ===== TOGGLE ===== */
     .toggle-group {
       display: flex;
       background: rgba(30, 41, 59, 0.6);
@@ -170,7 +165,7 @@
       box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
     }
 
-    /* ===== CHART CONTAINER ===== */
+
     .chart-container {
       display: flex;
       align-items: center;
@@ -180,12 +175,20 @@
     }
 
     .chart-container img {
-      max-width: 100%;
+      width: min(760px, 100%);
+      max-height: 480px;
       height: auto;
       border-radius: 12px;
+      object-fit: contain;
     }
 
-    /* ===== AI INSIGHT CARD ===== */
+    /* Keep pie charts a bit smaller than bar/line for better balance */
+    #pie-expense,
+    #pie-income {
+      width: min(560px, 100%);
+    }
+
+
     .ai-insight-card {
       background: linear-gradient(135deg, rgba(52, 211, 153, 0.08), rgba(99, 102, 241, 0.08));
       border: 1px solid rgba(52, 211, 153, 0.2);
@@ -210,7 +213,7 @@
       margin: 0;
     }
 
-    /* ===== ANOMALY TABLE ===== */
+
     .anomaly-badge {
       display: inline-block;
       padding: 4px 10px;
@@ -300,67 +303,26 @@
 </head>
 
 <body>
-  <!-- ===== NAVBAR ===== -->
-  <nav class="navbar navbar-expand-lg glass-nav px-1">
-    <a class="navbar-brand fw-bold" href="/dashboard">
-      <img src="{{ url_for('static', filename='img.png') }}" alt="Logo" style="width:45px;height:45px;">
-      Spendly
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navMenu">
-      <ul class="navbar-nav ms-auto align-items-center">
-        <li class="nav-item"><a class="nav-link" href="/dashboard"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
-        <li class="nav-item"><a class="nav-link" href="/accounts"><i class="bi bi-wallet2"></i> Accounts</a></li>
-        <li class="nav-item"><a class="nav-link active" href="/charts"><i class="bi bi-bar-chart"></i> Charts</a></li>
-        <li class="nav-item"><a class="nav-link" href="/reports"><i class="bi bi-file-earmark-bar-graph"></i>
-            Reports</a></li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
-            aria-expanded="false">
-            <i class="bi bi-person-circle"></i> {{ user.first_name }}
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown"
-            style="background:rgba(15,23,42,0.95);border:1px solid rgba(99,102,241,0.3);">
-            <li><a class="dropdown-item" href="/profile" style="color:#c7d2fe;">Profile</a></li>
-            <li>
-              <hr class="dropdown-divider" style="border-color:rgba(99,102,241,0.2);">
-            </li>
-            <li><a class="dropdown-item text-danger" href="/logout"
-                onclick="return confirm('Are you sure you want to logout?')">Logout</a></li>
-          </ul>
-        </li>
-      </ul>
-    </div>
-  </nav>
+  {% include "_navbar.html" %}
 
   <div class="container py-4">
 
-    <!-- ===== PAGE HEADER ===== -->
+
     <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
       <h2 style="font-weight: 800; font-size: 28px; margin: 0;">
         <i class="bi bi-bar-chart-line-fill" style="color: #818cf8;"></i> AI Analytics
       </h2>
       <div class="d-flex gap-2 flex-wrap mt-2 mt-md-0">
-        <span class="model-badge"><i class="bi bi-cpu"></i> Linear Regression (NumPy)</span>
+        <span class="model-badge"><i class="bi bi-cpu"></i> Auto-fetched from spendly.db</span>
         <span class="model-badge"><i class="bi bi-shield-check"></i> Z-Score Detection (NumPy)</span>
       </div>
     </div>
 
-    <!-- ═══════════════════════════════════════════
-           SECTION 1 : CATEGORY CHARTS (Expense / Income)
-           ═══════════════════════════════════════════ -->
+
     <div class="glass-card mb-4">
       <div class="section-title"><i class="bi bi-pie-chart-fill"></i> Category Breakdown</div>
 
-      <!-- Expense / Income toggle -->
-      <div class="toggle-group" id="dataToggle">
-        <button class="toggle-btn active" onclick="switchData('expense')">Expenses</button>
-        <button class="toggle-btn" onclick="switchData('income')">Income</button>
-      </div>
 
-      <!-- Chart type tabs -->
       <div class="chart-tabs">
         <button class="chart-tab-btn active" onclick="switchChart('pie')"><i
             class="bi bi-pie-chart me-1"></i>Pie</button>
@@ -369,31 +331,29 @@
       </div>
 
       <div class="chart-container">
-        <!-- Expense charts -->
+
         <img id="pie-expense" src="data:image/png;base64,{{ pie_expense_b64 }}"
           class="img-fluid chart-img expense-chart" alt="Expense Pie" style="display:block;">
         <img id="bar-expense" src="data:image/png;base64,{{ bar_expense_b64 }}"
           class="img-fluid chart-img expense-chart" alt="Expense Bar" style="display:none;">
-        <img id="line-expense" src="data:image/png;base64,{{ line_expense_b64 }}"
-          class="img-fluid chart-img expense-chart" alt="Expense Line" style="display:none;">
-        <!-- Income charts -->
+
+        <img id="line-expense" src="data:image/png;base64,{{ merged_line_b64 }}"
+          class="img-fluid chart-img expense-chart" alt="Expense vs Income Line" style="display:none;">
+
         <img id="pie-income" src="data:image/png;base64,{{ pie_income_b64 }}" class="img-fluid chart-img income-chart"
           alt="Income Pie" style="display:none;">
         <img id="bar-income" src="data:image/png;base64,{{ bar_income_b64 }}" class="img-fluid chart-img income-chart"
           alt="Income Bar" style="display:none;">
-        <img id="line-income" src="data:image/png;base64,{{ line_income_b64 }}" class="img-fluid chart-img income-chart"
-          alt="Income Line" style="display:none;">
+
+        <img id="line-income" src="data:image/png;base64,{{ merged_line_b64 }}" class="img-fluid chart-img income-chart"
+          alt="Expense vs Income Line" style="display:none;">
       </div>
     </div>
 
-    <!-- ═══════════════════════════════════════════
-           SECTION 2 : AI FORECAST
-           ═══════════════════════════════════════════ -->
     <div class="glass-card mb-4">
       <div class="section-title"><i class="bi bi-graph-up-arrow"></i> AI Spending Forecast</div>
       <div class="d-flex gap-2 mb-3">
-        <span class="model-badge"><i class="bi bi-cpu"></i> Model: Linear Regression &nbsp;|&nbsp; numpy.polyfit(x, y,
-          1)</span>
+        <span class="model-badge"><i class="bi bi-cpu"></i> Model: Linear Trend &nbsp;|&nbsp; Data source: spendly.db</span>
       </div>
 
       {% if forecast_b64 %}
@@ -412,9 +372,6 @@
       {% endif %}
     </div>
 
-    <!-- ═══════════════════════════════════════════
-           SECTION 3 : AI ANOMALY DETECTION
-           ═══════════════════════════════════════════ -->
     <div class="glass-card mb-4">
       <div class="section-title"><i class="bi bi-shield-exclamation"></i> AI Anomaly Detection</div>
       <div class="d-flex gap-2 mb-3">
@@ -466,7 +423,7 @@
 
     function switchChart(type) {
       currentChart = type;
-      // Update tab buttons
+
       document.querySelectorAll('.chart-tab-btn').forEach(b => b.classList.remove('active'));
       event.target.closest('.chart-tab-btn').classList.add('active');
       updateChartVisibility();
@@ -474,7 +431,7 @@
 
     function switchData(dataType) {
       currentData = dataType;
-      // Update toggle buttons
+
       document.querySelectorAll('#dataToggle .toggle-btn').forEach(b => b.classList.remove('active'));
       event.target.classList.add('active');
       updateChartVisibility();
@@ -482,9 +439,15 @@
 
     function updateChartVisibility() {
       document.querySelectorAll('.chart-img').forEach(img => img.style.display = 'none');
-      const targetId = currentChart + '-' + currentData;
-      const el = document.getElementById(targetId);
-      if (el) el.style.display = 'block';
+
+      // For line charts, always show both expense and income (merged chart)
+      if (currentChart === 'line') {
+        document.getElementById('line-expense').style.display = 'block';
+      } else {
+        const targetId = currentChart + '-' + currentData;
+        const el = document.getElementById(targetId);
+        if (el) el.style.display = 'block';
+      }
     }
   </script>
 </body>
